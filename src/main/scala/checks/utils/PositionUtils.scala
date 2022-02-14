@@ -46,4 +46,6 @@ object PositionUtils {
     val input = scala.io.StdIn.readLine()
     PositionUtils.StringToPosition(input)
   }
+
+
 }

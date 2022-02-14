@@ -1,27 +1,19 @@
 package checks
 
-import java.util
-
 import checks.Color.Color
 import checks.utils.PositionUtils
 
 class Piece(val position: Position, val color: Color) {
-  var pos: Position = position
-
-  def move(newPos: Position): Unit = {
-    if(isLegalMove(pos, newPos)) {
-      pos = newPos
-    }
-  }
-
-  def isLegalMove(oldPos: Position, newPos: Position): Boolean = {
-    (newPos.x == oldPos.x - 1 || newPos.x == oldPos.x - 1) && newPos.y == oldPos.y + 1
-  }
+  private var pos: Position = position
+  val col: Color = color
 
   override def toString(): String = {
     val position: String = PositionUtils.PositionToString(pos)
     position + ", " + color
   }
+
+  def getPos(): Position = pos
+  def setPos(position: Position) { pos = position }
 
 
 }

@@ -7,4 +7,8 @@ class Position(val xc: Int, val yc: Int) {
   def isLegalPosition(): Boolean = {
     x > 0 && x < 9 && y > 0 && y < 9
   }
+
+
+
+
 }
