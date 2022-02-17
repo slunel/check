@@ -4,6 +4,11 @@ import checks.Color._
 import checks.{Board, Piece, Position}
 
 object BoardUtils {
+
+  /**
+   * Initialize a board
+   * @return a board initialized
+   */
   def init(): Board = {
     val listPieces: List[Piece] =
       List(new Piece(new Position(1,1), WHITE),
@@ -79,10 +84,23 @@ object BoardUtils {
     board.listPieces.find(p => p.getPos().x == position.x && p.getPos().y == position.y)
   }
 
+  /**
+   * Get the piece at position from a list of pieces
+   * @param position
+   * @param listPieces
+   * @return the piece at position position
+   */
   def getPiece(position: Position, listPieces: List[Piece]): Option[Piece] = {
     listPieces.find(p => p.getPos().x == position.x && p.getPos().y == position.y)
   }
 
+  /**
+   * Move a piece from positionFrom to positionTo
+   * @param positionFrom
+   * @param positionTo
+   * @param board
+   * @return the board updated
+   */
   def move(positionFrom: Position, positionTo: Position, board: Board): Option[Board] = {
     getPiece(positionFrom, board) match {
       case Some(piece) => {
@@ -90,6 +108,23 @@ object BoardUtils {
           if(p.getPos().x == piece.getPos().x && p.getPos().y == piece.getPos().y) {p.setPos(positionTo); p}
           else {p}
         } )
+        Some(new Board(listPiecesUpdated))
+      }
+      case None => None
+    }
+  }
+
+  /**
+   * Remove the piece at positionToTake from the board
+   * This method does not check if it is a legal move
+   * @param positionToTake
+   * @param board
+   * @return the board without the piece
+   */
+  def take(positionToTake: Position, board: Board): Option[Board] = {
+    getPiece(positionToTake, board) match {
+      case Some(piece) => {
+        val listPiecesUpdated: List[Piece] = board.listPieces.filter(p => p.getPos().x != piece.getPos().x && p.getPos().y != piece.getPos().y)
         Some(new Board(listPiecesUpdated))
       }
       case None => None

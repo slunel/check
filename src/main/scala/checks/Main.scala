@@ -10,16 +10,21 @@ object Main extends App {
   val board: Board = BoardUtils.init()
   println("End initialisation of the board" )
   println(board.toString())
-  //BoardUtils.printLine(1,board.listPieces)
   BoardUtils.printBoard(board)
-  if(board.isLegalMove(new Position(1, 3), new Position(2,5))) println("True") else println("false")
-  BoardUtils.move(new Position(1,3), new Position(2,4), board) match {
-    case Some(board) => BoardUtils.printBoard(board)
-    case None => println("Trouble")
-  }
+
+  println("White to play")
+  val positionFrom: Position = PositionUtils.RetrievePosFrom()
+  val positionTo: Position = PositionUtils.RetrievePosTo()
+  if (board.isLegalMove(positionFrom, positionTo, WHITE)) println("Successful move") else println("Unauthorized move, please retry")
 
 
-  println("Hello, you are playing the whites" )
+
+//  if(board.isLegalMove(new Position(1, 3), new Position(2,5))) println("True") else println("false")
+//  BoardUtils.move(new Position(1,3), new Position(2,4), board) match {
+//    case Some(board) => BoardUtils.printBoard(board)
+//    case None => println("Trouble")
+//  }
+
 /*
   val posFrom: Position = PositionUtils.RetrievePosFrom()
   // TODO Add guards
