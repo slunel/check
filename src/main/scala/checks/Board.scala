@@ -2,7 +2,8 @@ package checks
 
 import checks.Color.{BLACK, Color, WHITE}
 import checks.Main.executionStart.==
-import checks.utils.BoardUtils
+import checks.utils.{BoardUtils, PositionUtils}
+import checks.utils.PositionUtils.determinePositionToTake
 
 class Board(val listPieces: List[Piece]) {
   val list: List[Piece] = listPieces
@@ -63,26 +64,8 @@ class Board(val listPieces: List[Piece]) {
   def isLegalTakeMove(positionFrom: Position, positionTo: Position): Boolean = {
     BoardUtils.getPiece(positionTo, listPieces) match {
       case Some(_) => false
-      case None => (positionFrom.x == positionTo.x - 2 || positionFrom.x == positionTo.x - 2) && (positionFrom.y == positionTo.y + 2 || positionFrom.y == positionTo.y - 2)
+      case None => (positionFrom.x == positionTo.x + 2 || positionFrom.x == positionTo.x - 2) && (positionFrom.y == positionTo.y + 2 || positionFrom.y == positionTo.y - 2)
     }
-  }
-
-  /**
-   * Auxiliary function to isLegalTakePiece
-   * Determine the position of the piece that would be taken by the move
-   * @param positionFrom
-   * @param positionTo
-   * @return the position between positionFrom and positionTo
-   */
-  def determinePositionToTake(positionFrom: Position, positionTo: Position): Position = {
-    val xFrom: Int = positionFrom.x
-    val yFrom: Int = positionFrom.y
-    val xTo: Int = positionTo.x
-    val yTo: Int = positionTo.y
-    if (xFrom > xTo && yFrom > yTo) {new Position(xFrom+1, yFrom+1)}
-    else if (xFrom > xTo && yFrom < yTo) {new Position(xFrom+1, yFrom-1)}
-    else if (xFrom < xTo && yFrom < yTo) {new Position(xFrom-1, yFrom-1)}
-    else {new Position(xFrom-1, yFrom+1)}
   }
 
   def isLegalTakePiece(positionFrom: Position, positionTo: Position, color: Color): Boolean = {

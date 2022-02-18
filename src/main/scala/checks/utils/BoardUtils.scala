@@ -1,7 +1,10 @@
 package checks.utils
 
 import checks.Color._
+import checks.utils.PositionUtils.determinePositionToTake
 import checks.{Board, Piece, Position}
+
+import scala.::
 
 object BoardUtils {
 
@@ -117,15 +120,25 @@ object BoardUtils {
   /**
    * Remove the piece at positionToTake from the board
    * This method does not check if it is a legal move
-   * @param positionToTake
+   * @param positionFrom
+   * @param positionTo
    * @param board
    * @return the board without the piece
    */
-  def take(positionToTake: Position, board: Board): Option[Board] = {
+  def take(positionFrom: Position, positionTo: Position, board: Board): Option[Board] = {
+    val positionToTake: Position = determinePositionToTake(positionFrom, positionTo)
     getPiece(positionToTake, board) match {
       case Some(piece) => {
-        val listPiecesUpdated: List[Piece] = board.listPieces.filter(p => p.getPos().x != piece.getPos().x && p.getPos().y != piece.getPos().y)
-        Some(new Board(listPiecesUpdated))
+        val listPiecesWithoutTakenPiece: List[Piece] = board.listPieces.filter(p => p.getPos().x != piece.getPos().x || p.getPos().y != piece.getPos().y)
+        val listPiecesWithoutTakingPiece: List[Piece] = listPiecesWithoutTakenPiece.filter(p => p.getPos().x != positionFrom.x || p.getPos().y != positionFrom.y)
+        getPiece(positionFrom, board) match {
+          case Some(pieceFrom) => {
+            val pieceAtNewPosition: Piece = new Piece(positionTo, pieceFrom.col)
+            val listPiecesUpdated: List[Piece] = pieceAtNewPosition::listPiecesWithoutTakingPiece
+            Some(new Board(listPiecesUpdated))
+          }
+          case None => None
+        }
       }
       case None => None
     }

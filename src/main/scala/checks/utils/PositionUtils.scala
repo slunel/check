@@ -47,5 +47,21 @@ object PositionUtils {
     PositionUtils.StringToPosition(input)
   }
 
+  /**
+   * Determine the position of the piece that would be taken by the move from positionFrom to positionTo
+   * @param positionFrom
+   * @param positionTo
+   * @return the position between positionFrom and positionTo
+   */
+  def determinePositionToTake(positionFrom: Position, positionTo: Position): Position = {
+    val xFrom: Int = positionFrom.x
+    val yFrom: Int = positionFrom.y
+    val xTo: Int = positionTo.x
+    val yTo: Int = positionTo.y
+    if (xFrom > xTo && yFrom > yTo) {new Position(xFrom-1, yFrom-1)}
+    else if (xFrom > xTo && yFrom < yTo) {new Position(xFrom-1, yFrom+1)}
+    else if (xFrom < xTo && yFrom < yTo) {new Position(xFrom+1, yFrom+1)}
+    else {new Position(xFrom+1, yFrom-1)}
+  }
 
 }

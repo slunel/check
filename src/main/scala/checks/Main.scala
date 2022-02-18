@@ -2,6 +2,7 @@ package checks
 
 import checks.Color._
 import checks.Main.board
+import checks.utils.PositionUtils.determinePositionToTake
 
 import scala.language.postfixOps
 import checks.utils.{BoardUtils, ColorUtils, PositionUtils, RuleUtils}
@@ -23,11 +24,18 @@ object Main extends App {
       println(s"${color} to play")
       val positionFrom: Position = PositionUtils.RetrievePosFrom()
       val positionTo: Position = PositionUtils.RetrievePosTo()
-      if (board.isLegalMove(positionFrom, positionTo, color)) {
-        println("legal move")
+      if (board.isLegalSimpleMove(positionFrom, positionTo, color)) {
+        println("legal simple move")
         BoardUtils.move(positionFrom, positionTo, board) match {
           case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color))
-          case _ =>
+          case _ => println("Error")
+        }
+      } else if(board.isLegalTake(positionFrom, positionTo, color)) {
+        println("legal take")
+        val positionToTake: Position = determinePositionToTake(positionFrom, positionTo)
+        BoardUtils.take(positionFrom, positionTo, board) match {
+          case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color))
+          case _ => println("Error")
         }
       } else {
         println("illegal move, please retry")
