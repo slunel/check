@@ -101,7 +101,7 @@ class Board(val listPieces: List[Piece]) {
   }
 
   def isLegalMove(positionFrom: Position, positionTo: Position, color: Color): Boolean = {
-    isLegalSimpleMove(positionFrom, positionTo, color)  // || isLegalTake(positionFrom, positionTo, color)
+    isLegalSimpleMove(positionFrom, positionTo, color)  || isLegalTake(positionFrom, positionTo, color)
   }
 
 }

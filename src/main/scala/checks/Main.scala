@@ -3,7 +3,7 @@ package checks
 import checks.Color._
 
 import scala.language.postfixOps
-import checks.utils.{BoardUtils, PositionUtils}
+import checks.utils.{BoardUtils, PositionUtils, RuleUtils}
 
 object Main extends App {
   println("Hello, initialisation of the board" )
@@ -13,9 +13,14 @@ object Main extends App {
   BoardUtils.printBoard(board)
 
   println("White to play")
+  // TODO use recursive function with parameter color
+  // => TODO : termination condition -> forfeit or no pieces of color
   val positionFrom: Position = PositionUtils.RetrievePosFrom()
   val positionTo: Position = PositionUtils.RetrievePosTo()
-  if (board.isLegalMove(positionFrom, positionTo, WHITE)) println("Successful move") else println("Unauthorized move, please retry")
+  if (board.isLegalMove(positionFrom, positionTo, BLACK)) println("Successful move") else println("Unauthorized move, please retry")
+  if(RuleUtils.hasNoPieces(board, BLACK)) println("End of game") else println("We can continue")
+
+
 
 
 
