@@ -1,23 +1,43 @@
 package checks
 
 import checks.Color._
+import checks.Main.board
 
 import scala.language.postfixOps
-import checks.utils.{BoardUtils, PositionUtils, RuleUtils}
+import checks.utils.{BoardUtils, ColorUtils, PositionUtils, RuleUtils}
 
 object Main extends App {
   println("Hello, initialisation of the board" )
   val board: Board = BoardUtils.init()
   println("End initialisation of the board" )
-  println(board.toString())
-  BoardUtils.printBoard(board)
 
-  println("White to play")
   // TODO use recursive function with parameter color
   // => TODO : termination condition -> forfeit or no pieces of color
-  val positionFrom: Position = PositionUtils.RetrievePosFrom()
-  val positionTo: Position = PositionUtils.RetrievePosTo()
-  if (board.isLegalMove(positionFrom, positionTo, BLACK)) println("Successful move") else println("Unauthorized move, please retry")
+
+  game(board, WHITE)
+
+  def game(board: Board, color: Color): Unit = {
+    if(RuleUtils.hasNoPieces(board, color)) println("End of game")
+    else {
+      BoardUtils.printBoard(board)
+      println(s"${color} to play")
+      val positionFrom: Position = PositionUtils.RetrievePosFrom()
+      val positionTo: Position = PositionUtils.RetrievePosTo()
+      if (board.isLegalMove(positionFrom, positionTo, color)) {
+        println("legal move")
+        BoardUtils.move(positionFrom, positionTo, board) match {
+          case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color))
+          case _ =>
+        }
+      } else {
+        println("illegal move, please retry")
+        game(board, color)
+      }
+    }
+  }
+
+
+
   if(RuleUtils.hasNoPieces(board, BLACK)) println("End of game") else println("We can continue")
 
 
