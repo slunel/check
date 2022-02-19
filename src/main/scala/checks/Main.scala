@@ -15,38 +15,64 @@ object Main extends App {
   // TODO use recursive function with parameter color
   // => TODO : termination condition -> forfeit or no pieces of color
 
-  game(board, WHITE)
+  game(board, WHITE, "CONTINUE")
 
-  def game(board: Board, color: Color): Unit = {
-    if(RuleUtils.hasNoPieces(board, color)) println("End of game")
+  // TODO use enumerations for message instead of string
+  def game(board: Board, color: Color, message: String): Unit = {
+    if(RuleUtils.hasNoPieces(board, color) || message == "END") println("End of game")
     else {
       BoardUtils.printBoard(board)
       println(s"${color} to play")
-      val positionFrom: Position = PositionUtils.RetrievePosFrom()
-      val positionTo: Position = PositionUtils.RetrievePosTo()
-      if (board.isLegalSimpleMove(positionFrom, positionTo, color)) {
-        println("legal simple move")
-        BoardUtils.move(positionFrom, positionTo, board) match {
-          case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color))
-          case _ => println("Error")
+      // TODO rework to use val instead of var here
+      var positionFrom: Position = new Position(0,0)
+      PositionUtils.RetrievePosFrom() match {
+        case Left(string) => if(string == "forfeit") {
+          println(s"The player with ${color} color have abandoned")
+          game(board, color, "END")
+        } else {
+          println("Invalid position, please retry")
+          game(board, color, "CONTINUE")
+          // TODO rework to use val instead of var here
         }
-      } else if(board.isLegalTake(positionFrom, positionTo, color)) {
-        println("legal take")
-        val positionToTake: Position = determinePositionToTake(positionFrom, positionTo)
-        BoardUtils.take(positionFrom, positionTo, board) match {
-          case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color))
-          case _ => println("Error")
+        case Right(position) => {
+          positionFrom = position
+          var positionTo: Position = new Position(0,0)
+          PositionUtils.RetrievePosTo() match {
+            case Left(string) => if(string == "forfeit") {
+              println(s"The player with ${color} color have abandoned")
+              game(board, color, "END")
+            } else {
+              println("Invalid position, please retry")
+              game(board, color,"CONTINUE")
+            }
+            case Right(position) => {
+              positionTo = position
+              if (board.isLegalSimpleMove(positionFrom, positionTo, color)) {
+                println("legal simple move")
+                BoardUtils.move(positionFrom, positionTo, board) match {
+                  case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color), "CONTINUE")
+                  case _ => println("Error")
+                }
+              } else if(board.isLegalTake(positionFrom, positionTo, color)) {
+                println("legal take")
+                BoardUtils.take(positionFrom, positionTo, board) match {
+                  case Some(newBoard) => game(newBoard, ColorUtils.oppositeColor(color), "CONTINUE")
+                  case _ => println("Error")
+                }
+              } else {
+                println("illegal move, please retry")
+                game(board, color,"CONTINUE")
+              }
+            }
+          }
+
         }
-      } else {
-        println("illegal move, please retry")
-        game(board, color)
+
       }
+
     }
   }
 
-
-
-  if(RuleUtils.hasNoPieces(board, BLACK)) println("End of game") else println("We can continue")
 
 
 

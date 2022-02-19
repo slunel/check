@@ -3,20 +3,26 @@ package checks.utils
 import checks.Position
 
 object PositionUtils {
-  // TODO use stainless here?
-  def StringToPosition(input: String): Position = {
-    val y:Int = input(1).asDigit
-    val x:Int = input(0) match {
-      case 'a' => 1
-      case 'b' => 2
-      case 'c' => 3
-      case 'd' => 4
-      case 'e' => 5
-      case 'f' => 6
-      case 'g' => 7
-      case 'h' => 8
+
+  def StringToPosition(input: String): Option[Position] = {
+    try{
+      val x:Int = input(0) match {
+        case 'a' => 1
+        case 'b' => 2
+        case 'c' => 3
+        case 'd' => 4
+        case 'e' => 5
+        case 'f' => 6
+        case 'g' => 7
+        case 'h' => 8
+        case _ => throw new InvalidPositionException("Invalid position exception")
+      }
+      val y:Int = input(1).asDigit
+      if(y > 8 || y < 1) throw new InvalidPositionException("Invalid position exception")
+      Some(new Position(x,y))
+    } catch {
+      case e: InvalidPositionException => None
     }
-    new Position(x,y)
   }
 
   def PositionToString(position: Position):String = {
@@ -35,16 +41,22 @@ object PositionUtils {
     xString + y
   }
 
-  def RetrievePosFrom():Position = {
+  def RetrievePosFrom():Either[String,Position] = {
     println("Please input the position of the piece you want to move")
     val input = scala.io.StdIn.readLine()
-    PositionUtils.StringToPosition(input)
+    PositionUtils.StringToPosition(input) match {
+      case Some(position) => Right(position)
+      case None => Left(input)
+    }
   }
 
-  def RetrievePosTo():Position = {
+  def RetrievePosTo():Either[String,Position] = {
     println("Please input the position where you want to move")
     val input = scala.io.StdIn.readLine()
-    PositionUtils.StringToPosition(input)
+    PositionUtils.StringToPosition(input) match {
+      case Some(position) => Right(position)
+      case None => Left(input)
+    }
   }
 
   /**
@@ -64,4 +76,5 @@ object PositionUtils {
     else {new Position(xFrom+1, yFrom-1)}
   }
 
+  case class InvalidPositionException(str: String) extends Exception
 }
