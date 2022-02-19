@@ -1,11 +1,11 @@
 package checks
 
 import checks.Color._
-import checks.Main.board
-import checks.utils.PositionUtils.determinePositionToTake
+import checks.utils.{BoardUtils, ColorUtils, PositionUtils, RuleUtils}
 
 import scala.language.postfixOps
-import checks.utils.{BoardUtils, ColorUtils, PositionUtils, RuleUtils}
+
+// TODO : name of methods in lowerCamelCase
 
 object Main extends App {
   println("Hello, initialisation of the board" )
