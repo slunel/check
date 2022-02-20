@@ -1,7 +1,7 @@
 package checks.utils
 
 import checks.Color._
-import checks.{Board, Piece, Position}
+import checks.{Board, Piece}
 
 object RuleUtils {
 
@@ -14,7 +14,7 @@ object RuleUtils {
    */
   def hasNoPieces(board: Board, color: Color): Boolean = {
     val listPieces: List[Piece] = board.listPieces
-    !(listPieces.exists(p => p.col == color))
+    !(listPieces.exists(p => p.color == color))
   }
 
 

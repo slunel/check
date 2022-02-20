@@ -4,8 +4,15 @@ import checks.Position
 
 object PositionUtils {
 
-  def StringToPosition(input: String): Option[Position] = {
+  /**
+   * Return a position if the input string is a valid position,
+   * i.e. of the form 'xn' x being a character between 'a' and 'h' and n a digit between 1 and 8
+   * @param input
+   * @return a position if valid position,note otherwise
+   */
+  def stringToPosition(input: String): Option[Position] = {
     try{
+      if(input.size != 2) throw InvalidPositionException("Invalid position exception")
       val x:Int = input(0) match {
         case 'a' => 1
         case 'b' => 2
@@ -15,17 +22,23 @@ object PositionUtils {
         case 'f' => 6
         case 'g' => 7
         case 'h' => 8
-        case _ => throw new InvalidPositionException("Invalid position exception")
+        case _ => throw InvalidPositionException("Invalid position exception")
       }
       val y:Int = input(1).asDigit
-      if(y > 8 || y < 1) throw new InvalidPositionException("Invalid position exception")
+      if(y > 8 || y < 1) throw InvalidPositionException("Invalid position exception")
       Some(new Position(x,y))
     } catch {
       case e: InvalidPositionException => None
     }
   }
 
-  def PositionToString(position: Position):String = {
+  /**
+   * Convert a position to a human readable string
+   * ex: Position(1,3) -> a3
+   * @param position
+   * @return
+   */
+  def positionToString(position: Position):String = {
     val x: Int = position.x
     val xString: String = x match {
       case 1 => "a"
@@ -41,19 +54,27 @@ object PositionUtils {
     xString + y
   }
 
-  def RetrievePosFrom():Either[String,Position] = {
+  /**
+   * Ask the user to input the position of the piece she wants to move
+   * @return a position if valid position, the input string otherwise
+   */
+  def retrievePosFrom():Either[String,Position] = {
     println("Please input the position of the piece you want to move")
     val input = scala.io.StdIn.readLine()
-    PositionUtils.StringToPosition(input) match {
+    PositionUtils.stringToPosition(input) match {
       case Some(position) => Right(position)
       case None => Left(input)
     }
   }
 
+  /**
+   * Ask the user to input the position where she wants to move the piece
+   * @return a position if valid position, the input string otherwise
+   */
   def RetrievePosTo():Either[String,Position] = {
     println("Please input the position where you want to move")
     val input = scala.io.StdIn.readLine()
-    PositionUtils.StringToPosition(input) match {
+    PositionUtils.stringToPosition(input) match {
       case Some(position) => Right(position)
       case None => Left(input)
     }

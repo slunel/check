@@ -25,7 +25,7 @@ object Main extends App {
       println(s"${color} to play")
       // TODO rework to use val instead of var here
       var positionFrom: Position = new Position(0,0)
-      PositionUtils.RetrievePosFrom() match {
+      PositionUtils.retrievePosFrom() match {
         case Left(string) => if(string == "forfeit") {
           println(s"The player with ${color} color have abandoned")
           game(board, color, "END")
@@ -85,9 +85,9 @@ object Main extends App {
 //  }
 
 /*
-  val posFrom: Position = PositionUtils.RetrievePosFrom()
+  val posFrom: Position = PositionUtils.retrievePosFrom()
   // TODO Add guards
-  println("you have chosen the position " + PositionUtils.PositionToString(posFrom) + " at coordinates " + posFrom.x.toString + posFrom.y.toString)
+  println("you have chosen the position " + PositionUtils.positionToString(posFrom) + " at coordinates " + posFrom.x.toString + posFrom.y.toString)
   val posTo: Position = PositionUtils.RetrievePosTo()
 
   val piece: Piece = new Piece(posFrom, WHITE)

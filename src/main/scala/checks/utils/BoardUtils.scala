@@ -4,8 +4,6 @@ import checks.Color._
 import checks.utils.PositionUtils.determinePositionToTake
 import checks.{Board, Piece, Position}
 
-import scala.::
-
 object BoardUtils {
 
   /**
@@ -55,7 +53,7 @@ object BoardUtils {
    * @param pieces
    */
   def printLine(lineNumber: Int, pieces: List[Piece]): Unit = {
-    val positionsX: List[(Int, Int, Color)] = pieces.map(p => (p.getPos().x, p.getPos().y, p.col))
+    val positionsX: List[(Int, Int, Color)] = pieces.map(p => (p.position.x, p.position.y, p.color))
     val line:List[Int] = List(1,2,3,4,5,6,7,8)
     val lineString:List[String] = line.map(x => {
       if(positionsX.contains((x, lineNumber, WHITE))) { "W" }
@@ -79,12 +77,12 @@ object BoardUtils {
   }
 
   def isPositionOccupied(position: Position, board: Board): Boolean = {
-    val positionsOfBoard: List[(Int, Int)] = board.listPieces.map(p => (p.getPos().x, p.getPos().y))
+    val positionsOfBoard: List[(Int, Int)] = board.listPieces.map(p => (p.position.x, p.position.y))
     positionsOfBoard.contains((position.x, position.y))
   }
 
   def getPiece(position: Position, board: Board): Option[Piece] = {
-    board.listPieces.find(p => p.getPos().x == position.x && p.getPos().y == position.y)
+    board.listPieces.find(p => p.position.x == position.x && p.position.y == position.y)
   }
 
   /**
@@ -94,7 +92,7 @@ object BoardUtils {
    * @return the piece at position position
    */
   def getPiece(position: Position, listPieces: List[Piece]): Option[Piece] = {
-    listPieces.find(p => p.getPos().x == position.x && p.getPos().y == position.y)
+    listPieces.find(p => p.position.x == position.x && p.position.y == position.y)
   }
 
   /**
@@ -107,14 +105,20 @@ object BoardUtils {
   def move(positionFrom: Position, positionTo: Position, board: Board): Option[Board] = {
     getPiece(positionFrom, board) match {
       case Some(piece) => {
-        val listPiecesUpdated: List[Piece] = board.listPieces.map(p => {
-          if(p.getPos().x == piece.getPos().x && p.getPos().y == piece.getPos().y) {p.setPos(positionTo); p}
-          else {p}
-        } )
-        Some(new Board(listPiecesUpdated))
+        val boardSubstracted: Board = removePiece(board, piece)
+        val pieceAtPositionTo: Piece = Piece(positionTo, piece.color)
+        Some(addPiece(boardSubstracted,pieceAtPositionTo))
       }
       case None => None
     }
+  }
+
+  def removePiece(board: Board, piece: Piece): Board = {
+    new Board(board.listPieces.filter(_ != piece))
+  }
+
+  def addPiece(board: Board, piece: Piece): Board = {
+    new Board(piece::board.listPieces)
   }
 
   /**
@@ -129,11 +133,11 @@ object BoardUtils {
     val positionToTake: Position = determinePositionToTake(positionFrom, positionTo)
     getPiece(positionToTake, board) match {
       case Some(piece) => {
-        val listPiecesWithoutTakenPiece: List[Piece] = board.listPieces.filter(p => p.getPos().x != piece.getPos().x || p.getPos().y != piece.getPos().y)
-        val listPiecesWithoutTakingPiece: List[Piece] = listPiecesWithoutTakenPiece.filter(p => p.getPos().x != positionFrom.x || p.getPos().y != positionFrom.y)
+        val listPiecesWithoutTakenPiece: List[Piece] = board.listPieces.filter(p => p.position.x != piece.position.x || p.position.y != piece.position.y)
+        val listPiecesWithoutTakingPiece: List[Piece] = listPiecesWithoutTakenPiece.filter(p => p.position.x != positionFrom.x || p.position.y != positionFrom.y)
         getPiece(positionFrom, board) match {
           case Some(pieceFrom) => {
-            val pieceAtNewPosition: Piece = new Piece(positionTo, pieceFrom.col)
+            val pieceAtNewPosition: Piece = new Piece(positionTo, pieceFrom.color)
             val listPiecesUpdated: List[Piece] = pieceAtNewPosition::listPiecesWithoutTakingPiece
             Some(new Board(listPiecesUpdated))
           }

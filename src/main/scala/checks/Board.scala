@@ -1,8 +1,7 @@
 package checks
 
 import checks.Color.{BLACK, Color, WHITE}
-import checks.Main.executionStart.==
-import checks.utils.{BoardUtils, PositionUtils}
+import checks.utils.BoardUtils
 import checks.utils.PositionUtils.determinePositionToTake
 
 class Board(val listPieces: List[Piece]) {
@@ -48,7 +47,7 @@ class Board(val listPieces: List[Piece]) {
   def isLegalSimpleMove(positionFrom: Position, positionTo: Position, color: Color): Boolean = {
     BoardUtils.getPiece(positionFrom, listPieces) match {
       case Some(piece: Piece) =>
-        if(piece.col == WHITE)
+        if(piece.color == WHITE)
           isLegalSimpleMoveWhite(positionFrom, positionTo) && WHITE == color
         else isLegalSimpleMoveBlack(positionFrom, positionTo) && color == BLACK
       case _ => false
@@ -72,7 +71,7 @@ class Board(val listPieces: List[Piece]) {
     val positionToTake: Position = determinePositionToTake(positionFrom, positionTo)
     BoardUtils.getPiece(positionFrom, listPieces) match {
       case Some(pieceFrom: Piece) => BoardUtils.getPiece(positionToTake, listPieces) match {
-        case Some(pieceToTake: Piece) => (pieceFrom.col != pieceToTake.col) && (pieceFrom.col == color)
+        case Some(pieceToTake: Piece) => (pieceFrom.color != pieceToTake.color) && (pieceFrom.color == color)
         case None => false
       }
       case None => false
@@ -85,6 +84,14 @@ class Board(val listPieces: List[Piece]) {
 
   def isLegalMove(positionFrom: Position, positionTo: Position, color: Color): Boolean = {
     isLegalSimpleMove(positionFrom, positionTo, color)  || isLegalTake(positionFrom, positionTo, color)
+  }
+
+  override def equals(obj: Any): Boolean = {
+    val board = obj.asInstanceOf[Board]
+    if (board.listPieces == listPieces) {
+      return true
+    }
+    false
   }
 
 }
